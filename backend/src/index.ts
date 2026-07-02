@@ -15,7 +15,7 @@ const server = app.listen(PORT, async () => {
   try {
     // Test database connection
     await prisma.$connect();
-    logger.info('💾 SQLite database connected successfully via Prisma');
+    logger.info('💾 Database connected successfully via Prisma');
   } catch (error) {
     logger.error('❌ Database connection failure:', error);
     process.exit(1);

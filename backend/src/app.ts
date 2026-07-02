@@ -19,11 +19,17 @@ const app = express();
 app.use(helmet());
 
 // Cross-Origin Resource Sharing
+const corsOriginSetting = process.env.CORS_ORIGIN || '*';
+const allowedOrigins = corsOriginSetting.includes(',')
+  ? corsOriginSetting.split(',').map((o) => o.trim())
+  : corsOriginSetting;
+
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || '*',
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
   })
 );
 

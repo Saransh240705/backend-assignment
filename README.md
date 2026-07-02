@@ -1,6 +1,6 @@
-# Backend Intern Assignment
+# Antigravity Task Workspace - Backend Intern Assignment
 
-A production-ready full-stack application consisting of a scalable **Express REST API with Role-Based Access Controls** and a polished **React + TypeScript (Vite)** frontend client. The application demonstrates JWT-based authentication, user authorization (User vs. Admin), input validation, centralized logging, and task management.
+A production-ready full-stack application consisting of a scalable **Express REST API with Role-Based Access Controls** and a polished **React + TypeScript (Vite)** frontend client. The application demonstrates JWT-based authentication, user authorization (User vs. Admin), input validation, centralized logging, task management, and complete Docker-based containerization.
 
 ---
 
@@ -10,79 +10,85 @@ The project is structured modularly for easy extensibility:
 ```text
 backend-assignment/
 ├── backend/
-│   ├── prisma/             # SQLite DB and Prisma schema
-│   └── src/
-│       ├── config/         # Database and Swagger configs
-│       ├── controllers/    # API controllers
-│       ├── middleware/     # JWT authentication and error validation middleware
-│       ├── routes/         # Express API routes (auth, tasks, users)
-│       ├── utils/          # Winston logger and custom errors
-│       └── validators/     # Zod schema definitions
-├── frontend/
+│   ├── prisma/             # PostgreSQL database schema and migrations
+│   │   └── schema.prisma   # Prisma schema using PostgreSQL provider
 │   ├── src/
-│   │   ├── components/     # UI elements (Auth Forms, Dashboard, TaskList)
-│   │   ├── styles/         # Glassmorphism design system CSS
-│   │   └── utils/          # API fetch wrapper
+│   │   ├── config/         # Database and Swagger configs
+│   │   ├── controllers/    # API controllers
+│   │   ├── middleware/     # JWT authentication and rate-limiting
+│   │   ├── routes/         # Express routes (auth, tasks, users)
+│   │   ├── utils/          # Centralized Winston logger
+│   │   └── validators/     # Zod schema definitions
+│   └── Dockerfile          # Multi-stage production build for backend
+├── frontend/
+│   ├── src/                # React components, styles, and utilities
+│   ├── Dockerfile          # Multi-stage production build serving SPA via Nginx
+│   ├── nginx.conf          # Nginx server configuration with routing fallback
 │   └── index.html
-└── README.md               # Master documentation and scalability note
+├── docker-compose.yml      # Multi-container production orchestrator
+└── README.md               # Setup and deployment documentation
 ```
 
 ---
 
-## 💾 Database Schema
+## 🚀 Production Deployment (Docker Compose)
 
-The SQLite schema represents a standard relation model:
-* **User**: Holds authentication data and user profile. Roles are either `USER` or `ADMIN`.
-* **Task**: Holds title, description, status (`PENDING`, `IN_PROGRESS`, `COMPLETED`), priority (`LOW`, `MEDIUM`, `HIGH`), and dueDate. It is related to `User` via a many-to-one relationship.
+The entire application stack (PostgreSQL Database, Redis cache, Express API backend, and Vite frontend served via Nginx) is fully containerized and orchestratable with a single command:
+
+1. Make sure you have **Docker** and **Docker Compose** installed.
+2. In the project root directory, run:
+   ```bash
+   docker compose up --build
+   ```
+3. Docker will build the optimized production images for the backend and frontend, spin up PostgreSQL and Redis, run the database migrations, and expose:
+   * **Frontend Application:** `http://localhost` (Port 80)
+   * **Backend API Server:** `http://localhost:5051`
+   * **API Swagger Documentation:** `http://localhost:5051/api-docs`
+
+To stop the containers:
+```bash
+docker compose down
+```
 
 ---
 
-## 🚀 Getting Started
+## 💻 Local Development Setup
 
-### Prerequisites
-Make sure you have Node.js (v18+) and npm installed.
+If you prefer to run the servers locally during development (e.g., using `nodemon` and Vite HMR), you can use Docker to spin up only the database:
 
-### Setup Database & Backend
-1. Open a terminal and navigate to the `backend` folder:
-   ```bash
-   cd backend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Sync database schema and generate the Prisma client:
-   ```bash
-   npm run db:generate
-   npx prisma db push
-   ```
-4. Seed the database with initial users and tasks:
-   ```bash
-   npx ts-node prisma/seed.ts
-   ```
-   * *Seeds created:*
-     * **Admin User:** `admin@example.com` (password: `password123`)
-     * **Normal User:** `user@example.com` (password: `password123`)
-5. Start the backend development server:
-   ```bash
-   npm run dev
-   ```
-   The backend will run on `http://localhost:5050` with Swagger docs available at `http://localhost:5050/api-docs`.
+### 1. Start the PostgreSQL Database
+Launch the database container in detached mode:
+```bash
+docker compose up db -d
+```
+This spins up PostgreSQL on port `5432` matching the connection string defined in `backend/.env`.
 
-### Setup Frontend
-1. Open a new terminal and navigate to the `frontend` folder:
-   ```bash
-   cd frontend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the frontend development server:
-   ```bash
-   npm run dev
-   ```
-   The client will boot on `http://localhost:5173` (or the next available port).
+### 2. Run Database Migrations & Seeding
+Navigate to the `backend` folder:
+```bash
+cd backend
+npm install
+npx prisma db push
+npx ts-node prisma/seed.ts
+```
+This creates the tables and seeds the database with:
+* **Admin User:** `admin@example.com` (password: `password123`)
+* **Normal User:** `user@example.com` (password: `password123`)
+
+### 3. Start Development Servers
+* **Start Backend:**
+  ```bash
+  cd backend
+  npm run dev
+  ```
+  Runs at `http://localhost:5051` (Swagger docs at `http://localhost:5051/api-docs`).
+* **Start Frontend:**
+  ```bash
+  cd frontend
+  npm install
+  npm run dev
+  ```
+  Runs at `http://localhost:5173`.
 
 ---
 
@@ -99,7 +105,7 @@ The backend API implements standard RESTful principles with appropriate HTTP sta
 - **`DELETE /api/v1/tasks/:id`**: Delete a task (requires owner or admin).
 - **`GET /api/v1/users`**: List all users (Admin only).
 
-Interactive Swagger documentation is served live at `http://localhost:5050/api-docs`.
+Interactive Swagger documentation is served live at `http://localhost:5051/api-docs`.
 
 ---
 

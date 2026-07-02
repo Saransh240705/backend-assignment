@@ -1,5 +1,5 @@
-// Actually, let's use localhost:5051 since that's what we tested and runs health checks successfully.
-const BASE_URL = 'http://localhost:5051/api/v1';
+// Read API URL dynamically from environment, fallback to localhost for local development
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5051/api/v1';
 
 export interface ApiResponse<T = any> {
   success: boolean;
