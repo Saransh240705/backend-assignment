@@ -22,11 +22,31 @@ app.use(helmet());
 const corsOriginSetting = process.env.CORS_ORIGIN || '*';
 const allowedOrigins = corsOriginSetting.includes(',')
   ? corsOriginSetting.split(',').map((o) => o.trim())
-  : corsOriginSetting;
+  : [corsOriginSetting];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or server-to-server)
+      if (!origin) return callback(null, true);
+      
+      const isAllowed = allowedOrigins.some((allowed) => {
+        if (allowed === '*') return true;
+        if (allowed === origin) return true;
+        if (allowed.startsWith('*.')) {
+          const suffix = allowed.slice(1);
+          return origin.endsWith(suffix);
+        }
+        return false;
+      });
+
+      // Automatically trust any Vercel preview/production deployments
+      if (isAllowed || origin.endsWith('.vercel.app')) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
