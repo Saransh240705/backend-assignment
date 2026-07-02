@@ -36,7 +36,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess, onToggleFo
   return (
     <div className="glass-panel auth-card">
       <div className="auth-header">
-        <h1 className="auth-logo">Antigravity Tasks</h1>
+        <h1 className="auth-logo">Handle Tasks</h1>
         <p className="auth-subtitle">Welcome back! Please login to your account</p>
       </div>
 

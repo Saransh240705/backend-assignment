@@ -38,7 +38,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess, o
   return (
     <div className="glass-panel auth-card">
       <div className="auth-header">
-        <h1 className="auth-logo">Antigravity Tasks</h1>
+        <h1 className="auth-logo">Handle Tasks</h1>
         <p className="auth-subtitle">Create your account to start managing tasks</p>
       </div>
 

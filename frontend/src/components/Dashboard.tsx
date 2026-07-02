@@ -118,7 +118,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ currentUser, onLogout }) =
       {/* Top Navigation / Header */}
       <header className="dashboard-header">
         <div className="logo-section">
-          <span className="app-title">Antigravity Workspace</span>
+          <span className="app-title">Handle Workspace</span>
         </div>
         
         <div className="profile-section">
