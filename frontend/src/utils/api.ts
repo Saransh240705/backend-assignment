@@ -1,5 +1,17 @@
 // Read API URL dynamically from environment, fallback to localhost for local development
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5051/api/v1';
+let rawBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5051/api/v1';
+
+// Trim trailing slash if present
+if (rawBaseUrl.endsWith('/')) {
+  rawBaseUrl = rawBaseUrl.slice(0, -1);
+}
+
+// Automatically append /api/v1 if the user provided only the root domain
+if (!rawBaseUrl.includes('/api/v1')) {
+  rawBaseUrl = `${rawBaseUrl}/api/v1`;
+}
+
+const BASE_URL = rawBaseUrl;
 
 export interface ApiResponse<T = any> {
   success: boolean;
