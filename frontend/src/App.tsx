@@ -42,18 +42,50 @@ export const App: React.FC = () => {
 
   if (!currentUser) {
     return (
-      <div className="auth-container">
-        {showRegister ? (
-          <RegisterForm
-            onRegisterSuccess={(user) => setCurrentUser(user)}
-            onToggleForm={() => setShowRegister(false)}
-          />
-        ) : (
-          <LoginForm
-            onLoginSuccess={(user) => setCurrentUser(user)}
-            onToggleForm={() => setShowRegister(true)}
-          />
-        )}
+      <div className="auth-split-layout">
+        {/* Left Side: Brand Panel */}
+        <div className="auth-brand-side">
+          <div className="brand-glow-orb"></div>
+          <div className="brand-content">
+            <span className="brand-tagline">Antigravity Workspace</span>
+            <h1 className="brand-hero-title">
+              Complete your projects with absolute control.
+            </h1>
+            <p className="brand-hero-desc">
+              Experience task management designed for speed, security, and aesthetic excellence.
+            </p>
+            
+            <div className="brand-features">
+              <div className="brand-feature-item">
+                <span className="feature-dot"></span>
+                <span>Role-Based Access Control</span>
+              </div>
+              <div className="brand-feature-item">
+                <span className="feature-dot"></span>
+                <span>Stateless JWT Session Management</span>
+              </div>
+              <div className="brand-feature-item">
+                <span className="feature-dot"></span>
+                <span>Responsive Bento Grid Workspaces</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Side: Form Container */}
+        <div className="auth-form-side">
+          {showRegister ? (
+            <RegisterForm
+              onRegisterSuccess={(user) => setCurrentUser(user)}
+              onToggleForm={() => setShowRegister(false)}
+            />
+          ) : (
+            <LoginForm
+              onLoginSuccess={(user) => setCurrentUser(user)}
+              onToggleForm={() => setShowRegister(true)}
+            />
+          )}
+        </div>
       </div>
     );
   }
